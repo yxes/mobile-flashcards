@@ -1,5 +1,6 @@
 import { RECEIVE_DECKS, ADD_DECK } from '../actions'
 
+
 function decks (state = {}, action) {
   switch (action.type) {
     case RECEIVE_DECKS:
@@ -10,7 +11,9 @@ function decks (state = {}, action) {
     case ADD_DECK:
       return {
         ...state,
-        ...action.deck
+        [action.deck.title]: {
+          'questions': action.deck.questions
+        }
       }
     default:
       return state

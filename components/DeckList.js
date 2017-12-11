@@ -12,7 +12,6 @@ import { white, gray, green, ltgreen } from '../utils/colors'
 
 
 function DeckTitle ({ style, deck, onPress }) {
-  console.log("this deck: ", deck)
   total_questions = 0
   if ('questions' in deck && deck.questions !== undefined) {
     total_questions = deck.questions.length
