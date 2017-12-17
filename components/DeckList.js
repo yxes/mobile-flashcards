@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import { 
+import {
+  Animated, 
   ScrollView,
   StyleSheet,
   Text,
@@ -31,32 +32,57 @@ function DeckTitle ({ style, deck, onPress }) {
 }
 
 class Decks extends Component {
+  state = {
+    opacity: new Animated.Value(0),
+    height: new Animated.Value(0)
+  }
+
   componentDidMount() {
     const { dispatch } = this.props
 
     getDecks()
       .then( decks => dispatch(receiveDecks(decks)) )
+      .then(this.openDecks)
+  }
+
+  openDecks = () => {
+    const { opacity, height } = this.state
+
+    Animated.timing(height, { toValue: 120, duration: 1000 }).start()
+    Animated.timing(opacity, { toValue: 1, duration: 1000 }).start()
   }
 
   submit = (deck) => {
-    this.props.navigation.navigate('Deck', {deck})
+    const { opacity, height } = this.state
+    const { navigate } = this.props.navigation
+
+    // fold up our decks
+    Animated.timing(opacity, { toValue: 0, duration: 1000 } )
+      .start()
+    Animated.timing(height, { toValue: 0, duration: 1000 })
+      .start(function onComplete() {
+        navigate('Deck', { deck })
+        Animated.timing(height, { toValue: 120, duration: 1000 }).start()
+        Animated.timing(opacity, { toValue: 1, duration: 1000 }).start()
+      })
   }
 
   render () {
     const { decks } = this.props
 
+    const { opacity, height } = this.state
+
     return (
       <ScrollView 
         contentContainerStyle={styles.contentContainer}>
         { Object.keys(decks).map( title => (
-          <DeckTitle
-        
-            style={ styles.deck }
-            key={title}
-            deck={{title, questions: decks[title].questions}}
-            onPress={this.submit} />
+          <Animated.View style={{ opacity, height }} key={title}>
+            <DeckTitle
+              style={ styles.deck }
+              deck={{title, questions: decks[title].questions}}
+              onPress={this.submit} />
+          </Animated.View>
         )) }
-        <Text></Text>
       </ScrollView>
     )
   }

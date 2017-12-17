@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native'
+import {Animated, StyleSheet, Text, TouchableOpacity, View} from 'react-native'
 import {connect} from 'react-redux'
 import {black, gray, green, red, white} from '../utils/colors'
 import Button from './Button'
@@ -16,6 +16,30 @@ class Quiz extends Component {
       total: 0
     },
     complete: false
+  }
+
+  componentWillMount() {
+    this.animatedValue = new Animated.Value(0)
+
+    this.value = 0
+    this.animatedValue.addListener( ({ value }) => {
+      this.value = value
+    })
+
+    this.frontInterpolate = this.animatedValue.interpolate({
+      inputRange: [0, 180],
+      outputRange: ['0deg', '180deg']
+    })
+
+    this.backInterpolate = this.animatedValue.interpolate({
+      inputRange: [0, 180],
+      outputRange: ['180deg', '360deg']
+    })
+
+    this.backOpacity = this.animatedValue.interpolate({
+      inputRange: [89, 90],
+      outputRange: [0, 1]
+    })
   }
 
   componentDidMount() {
@@ -60,11 +84,38 @@ class Quiz extends Component {
       index,
       question: !question
     })
+
+    if (this.value >= 90) {
+      Animated.spring(this.animatedValue,{
+        toValue: 0,
+        friction: 8,
+        tension: 8
+      }).start()
+    }else{
+      Animated.spring(this.animatedValue,{
+        toValue: 180,
+        friction: 8,
+        tension: 8
+      }).start()
+    }
   }
 
   render() {
     const { deck } = this.props.navigation.state.params
     const { complete, question, stats, text } = this.state
+
+    const frontAnimatedStyle = {
+      transform: [
+        { rotateY: this.frontInterpolate }
+      ]
+    }
+
+    const backAnimatedStyle = {
+      opacity: this.backOpacity,
+      transform: [
+        { rotateY: this.backInterpolate }
+      ]
+    }
 
     if (complete) {
       return(
@@ -77,11 +128,23 @@ class Quiz extends Component {
     return (
       <View style={styles.container}>
         <Text style={styles.header}>Quiz</Text>
-        <Text style={styles.subheader}>{ text }</Text>
+        <View>
+          <Animated.View style={[styles.flipCard, frontAnimatedStyle]}>
+            <Text style={styles.flipText}>
+              { text }
+            </Text>
+          </Animated.View>
+          <Animated.View style={[backAnimatedStyle, styles.flipCard, styles.flipCardBack]}>
+            <Text style={styles.flipText}>
+              { text }
+            </Text>
+          </Animated.View>
+        </View>
+        
         { question
           ? <Button
               onPress={this.next}
-              text='answer' />
+              text="click for answer" />
           : <View>
               <Button
                 buttonStyle={{backgroundColor: green}}
@@ -117,6 +180,33 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: gray,
     marginBottom: 20
+  },
+  flipCard: {
+    height: 200,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: green,
+    borderRadius: 12,
+    backfaceVisibility: 'hidden',
+    padding: 20,
+    shadowRadius: 3,
+    shadowOpacity: 0.8,
+    shadowColor: 'rgba(0,0,0,0.24)',
+    shadowOffset: {
+      width: 0,
+      height: 3
+    }
+  },
+  flipCardBack: {
+    backgroundColor: gray,
+    position: "absolute",
+    top: 0
+  },
+  flipText: {
+    width: 200,
+    fontSize: 20,
+    color: white,
+    fontWeight: 'bold'
   }
 })
 

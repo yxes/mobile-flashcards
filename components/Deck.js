@@ -21,7 +21,9 @@ class Deck extends Component {
     return (
       <View style={styles.container}>
         <Text style={styles.header}>{ deck.title }</Text>
-        <Text style={styles.subheader}>{ total_questions } decks</Text>
+        <Text style={styles.subheader}>
+          { total_questions } card{total_questions !== 1 && 's' }
+        </Text>
         <Button
           onPress={this.addCard}
           text='Add Card' />
