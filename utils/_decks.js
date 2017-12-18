@@ -36,6 +36,7 @@ function setDummyData () {
 
 export function formatDeckResults (results) {
   // testing data...
-  //return results === null ? setDummyData() : JSON.parse(results)
-  return results === null ? {} : JSON.parse(results)
+  return results === null ? setDummyData() : JSON.parse(results)
+  // empty decks to start
+  //return results === null ? {} : JSON.parse(results)
 } 
