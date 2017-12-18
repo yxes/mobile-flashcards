@@ -77,13 +77,11 @@ export function setLocalNotification() {
             if (status === 'granted') {
               Notifications.cancelAllScheduledNotificationsAsync()
 
-              // 8:00pm
+              // 8:30pm
               let tomorrow = new Date()
               tomorrow.setDate(tomorrow.getDate() + 1)
-              tomorrow.setHours(11)
-              tomorrow.setMinutes(19)
-
-              console.log("calling setLocalNotification: ", tomorrow)
+              tomorrow.setHours(20)
+              tomorrow.setMinutes(30)
 
               Notifications.scheduleLocalNotificationAsync(
                 createNotification(),{
