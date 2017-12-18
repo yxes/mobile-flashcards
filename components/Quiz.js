@@ -1,13 +1,20 @@
-import React, {Component} from 'react'
-import {Animated, StyleSheet, Text, TouchableOpacity, View} from 'react-native'
-import {connect} from 'react-redux'
-import {black, gray, green, red, white} from '../utils/colors'
-import Button from './Button'
+import React, { Component } from 'react'
 import { 
-  getDailyReminderValue,
+  Animated,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View 
+} from 'react-native'
+import { connect } from 'react-redux'
+import { Ionicons } from '@expo/vector-icons'
+import {
   clearLocalNotification,
+  getDailyReminderValue,
   setLocalNotification
 } from '../utils/helpers'
+import { gray, green, red, white } from '../utils/colors'
+import Button from './Button'
 
 
 class Quiz extends Component {
@@ -28,9 +35,9 @@ class Quiz extends Component {
   componentWillMount() {
     this.animatedValue = new Animated.Value(0)
 
-    this.value = 0
+    this.aniValue = 0
     this.animatedValue.addListener( ({ value }) => {
-      this.value = value
+      this.aniValue = value
     })
 
     this.frontInterpolate = this.animatedValue.interpolate({
@@ -52,29 +59,28 @@ class Quiz extends Component {
   }
 
   componentDidMount() {
-    const {deck} = this.props.navigation.state.params
+    const { deck } = this.props.navigation.state.params
 
     deck.questions.length === 0
      ? this.setState({ complete: true })
      : this.setState({ text: deck.questions[0].question })
-
   }
 
   // correct = true || false || undefined
   next = (correct) => {
-    const {deck} = this.props.navigation.state.params
+    const { deck } = this.props.navigation.state.params
     const old_index = this.state.index
-    const {question, complete} = this.state
+    const { complete, question, stats } = this.state
 
-    this.setState({error_msg: ""})
+    this.setState({ error_msg: "" })
 
     if (complete) return
 
     if (typeof(correct) === "boolean") { // true or false
       this.setState({
         stats: {
-          correct: this.state.stats.correct + (correct ? 1 : 0),
-          total: this.state.stats.total + 1
+          correct: stats.correct + (correct ? 1 : 0),
+          total: stats.total + 1
         }
       })
     }
@@ -96,7 +102,7 @@ class Quiz extends Component {
       question: !question
     })
 
-    if (this.value >= 90) {
+    if (this.aniValue >= 90) {
       Animated.spring(this.animatedValue,{
         toValue: 0,
         friction: 8,
@@ -120,7 +126,7 @@ class Quiz extends Component {
 
   render() {
     const { deck } = this.props.navigation.state.params
-    const { complete, question, stats, text, error_msg } = this.state
+    const { complete, error_msg, question, stats, text } = this.state
 
     const frontAnimatedStyle = {
       transform: [
@@ -138,7 +144,9 @@ class Quiz extends Component {
     if (complete) {
       return(
         <View style={styles.container}>
-          <Text>Score: {Math.round((stats.correct/stats.total) * 100)}%</Text>
+          <Text style={styles.header}>
+            Score: {Math.round((stats.correct/stats.total) * 100)}%
+          </Text>
           <Button
             buttonStyle={{ backgroundColor: green }}
             textStyle={{ color: white }}
@@ -149,6 +157,11 @@ class Quiz extends Component {
             text="Back To Deck"
             onPress={() => this.props.navigation.navigate("Deck",{deck})}
           />
+          <Text
+            style={{ padding: 20 }} 
+            onPress={() => this.props.navigation.navigate("Decks")}>
+            <Ionicons name='ios-book' size={15} /> Return to Decks
+          </Text>
         </View>
       )
     }
@@ -213,11 +226,6 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 30,
     fontWeight: 'bold'
-  },
-  subheader: {
-    fontSize: 14,
-    color: gray,
-    marginBottom: 20
   },
   flipCard: {
     height: 200,

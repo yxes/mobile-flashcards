@@ -7,20 +7,18 @@ import {
   TouchableOpacity,
   View } from 'react-native'
 import { connect } from 'react-redux'
-import { getDecks } from '../utils/helpers'
 import { receiveDecks } from '../actions'
-import { white, gray, green, ltgreen } from '../utils/colors'
+import { getDecks } from '../utils/helpers'
+import { gray, green, ltgreen, white } from '../utils/colors'
 
 
 function DeckTitle ({ style, deck, onPress }) {
-  total_questions = 0
-  if ('questions' in deck && deck.questions !== undefined) {
-    total_questions = deck.questions.length
-  }
+  const total_questions = ('questions' in deck && deck.questions !== undefined)
+    ? deck.questions.length
+    : 0
 
   return (
     <TouchableOpacity
-      key={ deck.title }
       style={style}
       onPress={() => onPress(deck)}>
       <Text style={styles.deckHeader}>{ deck.title }</Text>
@@ -32,6 +30,7 @@ function DeckTitle ({ style, deck, onPress }) {
 }
 
 class Decks extends Component {
+  
   state = {
     opacity: new Animated.Value(0),
     height: new Animated.Value(0)

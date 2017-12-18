@@ -1,19 +1,21 @@
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import {StyleSheet, Text, TextInput, View} from 'react-native'
-import { black, green, white } from '../utils/colors'
+import { StyleSheet, Text, TextInput, View } from 'react-native'
 import { addDeck } from '../actions'
 import { saveDeckTitle } from '../utils/helpers'
+import { green, white } from '../utils/colors'
 import Button from './Button'
 
 
 class NewDeck extends Component {
+  
   state = {
     title: ''
   }
 
   addTitle = () => {
     const { title } = this.state
+
     const deck = { title, questions: []}
 
     this.props.dispatch(addDeck(deck))
@@ -30,7 +32,7 @@ class NewDeck extends Component {
         <Text>What is the title of your new deck?</Text>
         <TextInput
           multiline={false}
-          autoFocus={true}
+          autoFocus={false}
           onSubmitEditing={this.addTitle}
           placeholder="Deck Title"
           style={style.input}

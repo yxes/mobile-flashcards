@@ -1,5 +1,5 @@
 import React from 'react';
-import { Platform, StatusBar, StyleSheet, Text, View } from 'react-native';
+import { Platform, StatusBar, StyleSheet, Text, View, AsyncStorage } from 'react-native';
 import { createStore } from 'redux'
 import { Provider } from 'react-redux'
 import reducer from './reducers'
@@ -68,7 +68,7 @@ const MainNavigator = StackNavigator({
   Deck: {
     screen: Deck,
     navigationOptions: {
-      title: 'udacicards',
+      title: 'UdaciCards: Deck',
       headerTintColor: white,
       headerStyle: {
         backgroundColor: green
@@ -78,7 +78,7 @@ const MainNavigator = StackNavigator({
   AddCard: {
     screen: AddCard,
     navigationOptions: {
-      title: 'udacicards: AddCard',
+      title: 'UdaciCards: AddCard',
       headerTintColor: white,
       headerStyle: {
         backgroundColor: green
@@ -88,7 +88,7 @@ const MainNavigator = StackNavigator({
   Quiz: {
     screen: Quiz,
     navigationOptions: {
-      title: 'deck',
+      title: 'UdaciCards: Quiz',
       headerTintColor: white,
       headerStyle: {
         backgroundColor: green

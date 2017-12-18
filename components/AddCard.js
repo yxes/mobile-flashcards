@@ -1,9 +1,9 @@
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import {StyleSheet, Text, TextInput, View} from 'react-native'
-import { gray, green, white } from '../utils/colors'
+import { StyleSheet, Text, TextInput, View } from 'react-native'
 import { addCard } from '../actions'
-import { getDecks, addCardToDeck } from '../utils/helpers'
+import { addCardToDeck } from '../utils/helpers'
+import { gray, green, white } from '../utils/colors'
 import Button from './Button'
 
 

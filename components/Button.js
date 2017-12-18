@@ -4,7 +4,7 @@ import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 
 
 export default function Button ({
-  text="button", onPress, buttonStyle={}, textStyle={}}) {
+  text="button", onPress, buttonStyle={}, textStyle={} }) {
 
   return (
     <TouchableOpacity
