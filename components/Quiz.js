@@ -22,7 +22,7 @@ class Quiz extends Component {
     },
     complete: false,
     error_msg: '',
-    notifications: True
+    notifications: true
   }
 
   componentWillMount() {
@@ -114,7 +114,7 @@ class Quiz extends Component {
     if (this.state.notifications) {
       clearLocalNotification()
         .then(setLocalNotification())
-        .then(this.setState({ notifications: False }))
+        .then(this.setState({ notifications: false }))
     }
   }
 
