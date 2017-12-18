@@ -12,7 +12,8 @@ class Deck extends Component {
   }
 
   render() {
-    const {deck} = this.props.navigation.state.params
+    const {title} = this.props.navigation.state.params.deck
+    const deck = this.props.decks[title]
 
     const total_questions = 'questions' in deck && deck.questions !== undefined
       ? deck.questions.length
@@ -24,9 +25,6 @@ class Deck extends Component {
         <Text style={styles.subheader}>
           { total_questions } card{total_questions !== 1 && 's' }
         </Text>
-        <Button
-          onPress={this.addCard}
-          text='Add Card' />
         { total_questions > 0 && // no questions - no quiz
             <Button
               buttonStyle={{ backgroundColor: green }}
@@ -34,6 +32,9 @@ class Deck extends Component {
               onPress={() => this.startQuiz(deck)}
               text='Start Quiz' />
         }
+        <Button
+          onPress={() => this.props.navigation.navigate('AddCard', {deck})}
+          text='Add Card' />
       </View>
     )
   }
@@ -68,4 +69,8 @@ const styles = StyleSheet.create({
   }
 })
 
-export default connect()(Deck)
+function mapStateToProps(decks) {
+  return { decks }
+}
+
+export default connect(mapStateToProps)(Deck)

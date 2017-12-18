@@ -3,6 +3,11 @@ import {Animated, StyleSheet, Text, TouchableOpacity, View} from 'react-native'
 import {connect} from 'react-redux'
 import {black, gray, green, red, white} from '../utils/colors'
 import Button from './Button'
+import { 
+  getDailyReminderValue,
+  clearLocalNotification,
+  setLocalNotification
+} from '../utils/helpers'
 
 
 class Quiz extends Component {
@@ -15,7 +20,9 @@ class Quiz extends Component {
       correct: 0,
       total: 0
     },
-    complete: false
+    complete: false,
+    error_msg: '',
+    notifications: True
   }
 
   componentWillMount() {
@@ -36,6 +43,8 @@ class Quiz extends Component {
       outputRange: ['180deg', '360deg']
     })
 
+    // Android backfaceVisibility bug:
+    // https://github.com/facebook/react-native/pull/15970
     this.backOpacity = this.animatedValue.interpolate({
       inputRange: [89, 90],
       outputRange: [0, 1]
@@ -56,6 +65,8 @@ class Quiz extends Component {
     const {deck} = this.props.navigation.state.params
     const old_index = this.state.index
     const {question, complete} = this.state
+
+    this.setState({error_msg: ""})
 
     if (complete) return
 
@@ -98,11 +109,18 @@ class Quiz extends Component {
         tension: 8
       }).start()
     }
+
+    // you don't have to complete the quiz to turn off the notification
+    if (this.state.notifications) {
+      clearLocalNotification()
+        .then(setLocalNotification())
+        .then(this.setState({ notifications: False }))
+    }
   }
 
   render() {
     const { deck } = this.props.navigation.state.params
-    const { complete, question, stats, text } = this.state
+    const { complete, question, stats, text, error_msg } = this.state
 
     const frontAnimatedStyle = {
       transform: [
@@ -121,6 +139,16 @@ class Quiz extends Component {
       return(
         <View style={styles.container}>
           <Text>Score: {Math.round((stats.correct/stats.total) * 100)}%</Text>
+          <Button
+            buttonStyle={{ backgroundColor: green }}
+            textStyle={{ color: white }}
+            text="Restart Quiz"
+            onPress={() => this.props.navigation.navigate("Quiz",{deck})}
+          />
+          <Button
+            text="Back To Deck"
+            onPress={() => this.props.navigation.navigate("Deck",{deck})}
+          />
         </View>
       )
     }
@@ -129,23 +157,32 @@ class Quiz extends Component {
       <View style={styles.container}>
         <Text style={styles.header}>Quiz</Text>
         <View>
-          <Animated.View style={[styles.flipCard, frontAnimatedStyle]}>
-            <Text style={styles.flipText}>
-              { text }
-            </Text>
-          </Animated.View>
-          <Animated.View style={[backAnimatedStyle, styles.flipCard, styles.flipCardBack]}>
-            <Text style={styles.flipText}>
-              { text }
-            </Text>
-          </Animated.View>
+          <TouchableOpacity 
+            onPress={question 
+              ? this.next 
+              : () => { this.setState({
+                error_msg: "Please select 'Correct' or 'Incorrect'" }) }
+            }>
+            <Animated.View style={[styles.flipCard, frontAnimatedStyle]}>
+              <Text style={styles.flipText}>
+                { text }
+              </Text>
+            </Animated.View>
+            <Animated.View style={[backAnimatedStyle, styles.flipCard, styles.flipCardBack]}>
+              <Text style={styles.flipText}>
+                { text }
+              </Text>
+            </Animated.View>
+          </TouchableOpacity>
         </View>
+        <Text style={{color: red}}>{error_msg !== "" && error_msg }</Text>
         
         { question
           ? <Button
               onPress={this.next}
               text="click for answer" />
           : <View>
+              
               <Button
                 buttonStyle={{backgroundColor: green}}
                 textStyle={{color: white}}
@@ -160,7 +197,8 @@ class Quiz extends Component {
             </View>
         }
         <Text style={{ padding: 30 }}>
-          { deck.questions.length - stats.total - 1 } cards left
+          { (deck.questions.length - stats.total - 1) }{" "} 
+          question{ deck.questions.length - stats.total - 1 !== 1 && "s"} left
         </Text>
       </View>
     )

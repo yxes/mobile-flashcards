@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import { connect } from 'react-redux'
 import {StyleSheet, Text, TextInput, View} from 'react-native'
-import { black, white } from '../utils/colors'
+import { black, green, white } from '../utils/colors'
 import { addDeck } from '../actions'
 import { saveDeckTitle } from '../utils/helpers'
 import Button from './Button'
@@ -13,14 +13,14 @@ class NewDeck extends Component {
 
   addTitle = () => {
     const { title } = this.state
-    
-    this.props.dispatch(addDeck({title, questions: []}))
+    const deck = { title, questions: []}
+
+    this.props.dispatch(addDeck(deck))
+    saveDeckTitle(title)
 
     this.setState({ title: '' })
 
-    // go Home
-
-    saveDeckTitle(title)
+    this.props.navigation.navigate('Deck', {deck})
   }
 
   render() {
@@ -36,10 +36,10 @@ class NewDeck extends Component {
           onChangeText={ title => this.setState({title}) }
           value={this.state.title} />
         <Button
-          buttonStyle={{ backgroundColor: black }}
+          buttonStyle={{ backgroundColor: green }}
           textStyle={{ color: white }}
           onPress={this.addTitle}
-          text='Submit'
+          text='Create Deck'
         />
       </View>
     )
@@ -55,7 +55,7 @@ const style = StyleSheet.create({
   input: {
     height: 40,
     width: 200,
-    borderColor: black,
+    borderColor: green,
     borderWidth: 1,
     padding: 10
   }

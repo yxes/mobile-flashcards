@@ -7,8 +7,10 @@ import { TabNavigator, StackNavigator } from 'react-navigation'
 import { Ionicons } from '@expo/vector-icons'
 import { Constants } from 'expo'
 import { green, dkgreen, ltgreen, white } from './utils/colors'
+import { setLocalNotification } from './utils/helpers'
 import DeckList from './components/DeckList'
 import NewDeck from './components/NewDeck'
+import AddCard from './components/AddCard'
 import Deck from './components/Deck'
 import Quiz from './components/Quiz'
 
@@ -72,6 +74,16 @@ const MainNavigator = StackNavigator({
       }
     }
   },
+  AddCard: {
+    screen: AddCard,
+    navigationOptions: {
+      title: 'udacicards: AddCard',
+      headerTintColor: white,
+      headerStyle: {
+        backgroundColor: green
+      }
+    }
+  },
   Quiz: {
     screen: Quiz,
     navigationOptions: {
@@ -85,6 +97,11 @@ const MainNavigator = StackNavigator({
 })
 
 export default class App extends React.Component {
+  
+  componentDidMount() {
+    setLocalNotification()
+  }
+
   render() {
     return (
       <Provider store={createStore(reducer)}>
