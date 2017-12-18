@@ -31,11 +31,11 @@ class Deck extends Component {
               buttonStyle={{ backgroundColor: green }}
               textStyle={{ color: white }}
               onPress={() => this.startQuiz(deck)}
-              text='Start Quiz' />
+              text='Start a Quiz' />
         }
         <Button
           onPress={() => this.props.navigation.navigate('AddCard', {deck})}
-          text='Add Card' />
+          text='Create New Question' />
       </View>
     )
   }

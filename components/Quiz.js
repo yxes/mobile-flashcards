@@ -193,7 +193,7 @@ class Quiz extends Component {
         { question
           ? <Button
               onPress={this.next}
-              text="click for answer" />
+              text="Show Answer" />
           : <View>
               
               <Button
@@ -211,7 +211,7 @@ class Quiz extends Component {
         }
         <Text style={{ padding: 30 }}>
           { (deck.questions.length - stats.total - 1) }{" "} 
-          question{ deck.questions.length - stats.total - 1 !== 1 && "s"} left
+          question{ deck.questions.length - stats.total - 1 !== 1 && "s"}{" "} remaining
         </Text>
       </View>
     )
