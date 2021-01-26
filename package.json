@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "devDependencies": {
-    "jest-expo": "34.0.1",
+    "jest-expo": "^35.0.0",
     "react-native-scripts": "2.0.1",
     "react-test-renderer": "16.9.0"
   },
@@ -19,9 +19,9 @@
     "preset": "jest-expo"
   },
   "dependencies": {
-    "expo": "^34.0.4",
-    "react": "16.9.0",
-    "react-native": "0.60.5",
+    "expo": "^35.0.0",
+    "react": "16.8.3",
+    "react-native": "https://github.com/expo/react-native/archive/sdk-35.0.0.tar.gz",
     "react-navigation": "4.0.0",
     "react-redux": "7.1.1"
   }
